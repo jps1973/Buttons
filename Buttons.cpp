@@ -38,6 +38,21 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 		case WM_CREATE:
 		{
 			// A create message
+			HINSTANCE hInstance;
+			HFONT hFont;
+
+			// Get instance
+			hInstance = ( ( LPCREATESTRUCT )lParam )->hInstance;
+
+			// Get font
+			hFont = ( HFONT )GetStockObject( DEFAULT_GUI_FONT );
+
+			// Create button windows
+			if( ButtonWindowCreate( hWndMain, hInstance, hFont ) )
+			{
+				// Successfully created button windows
+
+			} // End of successfully created button windows
 
 			// Break out of switch
 			break;
@@ -48,10 +63,17 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 			// A size message
 			int nClientWidth;
 			int nClientHeight;
+			int nButtonWindowTop;
 
 			// Store client width and height
 			nClientWidth	= ( int )LOWORD( lParam );
 			nClientHeight	= ( int )HIWORD( lParam );
+
+			// Calculate control window positions
+			nButtonWindowTop = ( nClientHeight - ( BUTTON_WINDOW_HEIGHT + MAIN_WINDOW_BORDER_SIZE ) );
+
+			// Move button windows
+			ButtonWindowMove( nButtonWindowTop, MAIN_WINDOW_BORDER_SIZE );
 
 			// Break out of switch
 			break;
@@ -137,6 +159,73 @@ LRESULT CALLBACK MainWndProc( HWND hWndMain, UINT uMessage, WPARAM wParam, LPARA
 			// Select command
 			switch( LOWORD( wParam ) )
 			{
+				case ( BUTTON_WINDOW_BROWSE_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
+				{
+					// A browse button command
+
+					// Display message
+					MessageBox( hWndMain, "A browse button command", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a browse button command
+				case ( BUTTON_WINDOW_FILTER_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
+				{
+					// A filter button command
+
+					// Display message
+					MessageBox( hWndMain, "A filter button command", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a filter button command
+				case ( BUTTON_WINDOW_COPY_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
+				{
+					// A copy button command
+
+					// Display message
+					MessageBox( hWndMain, "A copy button command", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a copy button command
+				case ( BUTTON_WINDOW_MOVE_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
+				{
+					// A move button command
+
+					// Display message
+					MessageBox( hWndMain, "A move button command", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a move button command
+				case ( BUTTON_WINDOW_DELETE_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
+				{
+					// A delete button command
+
+					// Display message
+					MessageBox( hWndMain, "A delete button command", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a delete button command
+				case ( BUTTON_WINDOW_RENAME_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
+				{
+					// A rename button command
+
+					// Display message
+					MessageBox( hWndMain, "A rename button command", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a rename button command
+				case ( BUTTON_WINDOW_ABOUT_BUTTON + BUTTON_WINDOW_FIRST_BUTTON_ID ):
 				case IDM_HELP_ABOUT:
 				{
 					// A help about command
