@@ -9,6 +9,60 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 	// Select message
 	switch( uMessage )
 	{
+		case WM_CREATE:
+		{
+			// A create message
+			HINSTANCE hInstance;
+
+			// Get instance
+			hInstance = ( ( LPCREATESTRUCT )lParam )->hInstance;
+
+			// Create button window
+			if( ButtonWindowCreate( hWndMain, hInstance ) )
+			{
+				// Successfully created button window
+			} // End of successfully created button window
+
+			// Break out of switch
+			break;
+
+		} // End of a create message
+		case WM_COMMAND:
+		{
+			// A command message
+
+			// Select command
+			switch( LOWORD( wParam ) )
+			{
+				case BUTTON_WINDOW_ID:
+				{
+					// A button window command
+
+					// Destroy main window
+					MessageBox( hWndMain, "Button has been Pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					// Break out of switch
+					break;
+
+				} // End of a button window command
+				default:
+				{
+					// Default command
+
+					// Call default procedure
+					lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+
+					// Break out of switch
+					break;
+
+				} // End of default command
+
+			}; // End of selection for command
+
+			// Break out of switch
+			break;
+
+		} // End of a command message
 		case WM_CLOSE:
 		{
 			// A close message
