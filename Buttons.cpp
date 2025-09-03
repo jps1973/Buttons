@@ -18,7 +18,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			hInstance = ( ( LPCREATESTRUCT )lParam )->hInstance;
 
 			// Create button window
-			if( ButtonWindowCreate( hWndMain, hInstance ) )
+			if( ButtonWindowCreate( hWndMain, hInstance, "CodeBlocks.lnk" ) )
 			{
 				// Successfully created button window
 			} // End of successfully created button window

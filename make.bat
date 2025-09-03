@@ -8,4 +8,4 @@ g++ -mwindows -m64 -static -Wall -Wextra ^
  ^
  ButtonWindow.cpp ^
  ^
- -o Buttons.exe
+ -o Buttons.exe -lole32 -luuid

@@ -4,6 +4,9 @@
 
 #include <windows.h>
 #include <commctrl.h>
+#include <shlobj.h>
+
+#include "Common.h"
 
 #define BUTTON_WINDOW_CLASS_NAME												WC_BUTTON
 
@@ -16,4 +19,4 @@
 #define BUTTON_WINDOW_WIDTH														32
 #define BUTTON_WINDOW_HEIGHT													32
 
-BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance );
+BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShortcutFileName );

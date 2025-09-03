@@ -5,7 +5,7 @@
 // Global variables
 static HWND g_hWndButton;
 
-BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance )
+BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShortcutFileName )
 {
 	BOOL bResult = FALSE;
 
@@ -16,9 +16,88 @@ BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance )
 	if( g_hWndButton )
 	{
 		// Successfully created button window
+		HRESULT hResult;
 
-		// Update return value
-		bResult = FALSE;
+		// Initialise com library
+		hResult = CoInitialize( 0 );
+
+		// Ensure that com library was initialised
+		if( SUCCEEDED( hResult ) )
+		{
+			// Successfully initialised com library
+			IShellLinkA *lpShellLink;
+			// Create shell link
+			hResult = CoCreateInstance( CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, ( LPVOID * )&lpShellLink );
+
+			// Ensure that shell link was created
+			if( SUCCEEDED( hResult ) )
+			{
+				// Successfully created shell link
+				IPersistFile *lpPersistFile;
+
+				// Get persist file
+				hResult = lpShellLink->QueryInterface( IID_IPersistFile, ( LPVOID * )&lpPersistFile );
+
+				// Ensure that persist file was got
+				if( SUCCEEDED( hResult ) )
+				{
+					// Successfully got persist file
+					WCHAR wszShortcutFileName[ STRING_LENGTH ];
+
+					// Convert short-cut file name to wide format
+					MultiByteToWideChar( CP_ACP, 0, lpszShortcutFileName, -1, wszShortcutFileName, STRING_LENGTH );
+
+					// Load short-cut into persist file
+					hResult = lpPersistFile->Load( wszShortcutFileName, STGM_READ );
+
+					// Ensure that short-cut was loaded into persist file
+					if( SUCCEEDED( hResult ) )
+					{
+						// Successfully loaded short-cut into persist file
+
+						// Allocate string memory
+						LPTSTR lpszTargetPath = new char[ STRING_LENGTH + sizeof( char ) ];
+
+						// Get target path
+						hResult = lpShellLink->GetPath( lpszTargetPath, STRING_LENGTH, NULL, ( SLGP_UNCPRIORITY | SLGP_RAWPATH ) );
+
+						// Ensure that target path was got
+						if( SUCCEEDED( hResult ) )
+						{
+							// Successfully got target path
+							SHFILEINFO shFileInfo;
+
+							// Get target file icon information
+							if( SHGetFileInfo( lpszTargetPath, 0, &shFileInfo, sizeof( SHFILEINFO ), SHGFI_ICON ) )
+							{
+								// Successfully got target file icon information
+
+								// Set target icon as button image
+								SendMessage( g_hWndButton, BM_SETIMAGE, ( WPARAM )IMAGE_ICON, ( LPARAM )shFileInfo.hIcon );
+
+								// Display target path
+								MessageBox( NULL, lpszTargetPath, INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+								// Update return value
+								bResult = TRUE;
+
+							} // End of successfully got target file icon information
+
+						} // End of successfully got target path
+
+						// Free string memory
+						delete [] lpszTargetPath;
+
+					} // End of successfully loaded short-cut into persist file
+
+				} // End of successfully got persist file
+
+			} // End of successfully created shell link
+
+			// Un-initlalise com library
+			CoUninitialize();
+
+		} // End of successfully initialised com library
 
 	} // End of successfully created button window
 
