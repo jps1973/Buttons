@@ -3,17 +3,19 @@
 #include "ButtonWindow.h"
 
 // Global variables
-static HWND g_hWndButton;
+static LinkedList g_linkedList;
 
-BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShortcutFileName )
+BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, int nButtonWindowID, LPCTSTR lpszShortcutFileName )
 {
 	BOOL bResult = FALSE;
 
+	HWND hWndButton;
+
 	// Create button window
-	g_hWndButton = CreateWindowEx( BUTTON_WINDOW_EXTENDED_STYLE, BUTTON_WINDOW_CLASS_NAME, BUTTON_WINDOW_TEXT, BUTTON_WINDOW_STYLE, 0, 0, BUTTON_WINDOW_WIDTH, BUTTON_WINDOW_HEIGHT, hWndParent, ( HMENU )BUTTON_WINDOW_ID, hInstance, NULL );
+	hWndButton = CreateWindowEx( BUTTON_WINDOW_EXTENDED_STYLE, BUTTON_WINDOW_CLASS_NAME, BUTTON_WINDOW_TEXT, BUTTON_WINDOW_STYLE, 0, 0, BUTTON_WINDOW_WIDTH, BUTTON_WINDOW_HEIGHT, hWndParent, ( HMENU )( INT_PTR )nButtonWindowID, hInstance, NULL );
 
 	// Ensure that button window was created
-	if( g_hWndButton )
+	if( hWndButton )
 	{
 		// Successfully created button window
 		HRESULT hResult;
@@ -26,6 +28,7 @@ BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShort
 		{
 			// Successfully initialised com library
 			IShellLinkA *lpShellLink;
+
 			// Create shell link
 			hResult = CoCreateInstance( CLSID_ShellLink, NULL, CLSCTX_INPROC_SERVER, IID_IShellLink, ( LPVOID * )&lpShellLink );
 
@@ -73,10 +76,10 @@ BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShort
 								// Successfully got target file icon information
 
 								// Set target icon as button image
-								SendMessage( g_hWndButton, BM_SETIMAGE, ( WPARAM )IMAGE_ICON, ( LPARAM )shFileInfo.hIcon );
+								SendMessage( hWndButton, BM_SETIMAGE, ( WPARAM )IMAGE_ICON, ( LPARAM )shFileInfo.hIcon );
 
-								// Display target path
-								MessageBox( NULL, lpszTargetPath, INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+								// Add button to linked list
+								g_linkedList.AddNode( nButtonWindowID, hWndButton, lpszTargetPath );
 
 								// Update return value
 								bResult = TRUE;
@@ -104,3 +107,10 @@ BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShort
 	return bResult;
 
 } // End of function ButtonWindowCreate
+
+BOOL ButtonWindowGetTargetPath( int nID, LPTSTR lpszTargetPath )
+{
+	// Get target path
+	return g_linkedList.GetTargetPath( nID, lpszTargetPath );
+
+} // End of function ButtonWindowGetTargetPath

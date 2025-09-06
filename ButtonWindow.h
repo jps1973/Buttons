@@ -8,6 +8,8 @@
 
 #include "Common.h"
 
+#include "LinkedListClass.h"
+
 #define BUTTON_WINDOW_CLASS_NAME												WC_BUTTON
 
 #define BUTTON_WINDOW_EXTENDED_STYLE											0
@@ -19,4 +21,6 @@
 #define BUTTON_WINDOW_WIDTH														32
 #define BUTTON_WINDOW_HEIGHT													32
 
-BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShortcutFileName );
+BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, int nButtonWindowID, LPCTSTR lpszShortcutFileName );
+
+BOOL ButtonWindowGetTargetPath( int nID, LPTSTR lpszTargetPath );

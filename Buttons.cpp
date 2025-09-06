@@ -18,7 +18,7 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			hInstance = ( ( LPCREATESTRUCT )lParam )->hInstance;
 
 			// Create button window
-			if( ButtonWindowCreate( hWndMain, hInstance, "CodeBlocks.lnk" ) )
+			if( ButtonWindowCreate( hWndMain, hInstance, BUTTON_WINDOW_ID, "CodeBlocks.lnk" ) )
 			{
 				// Successfully created button window
 			} // End of successfully created button window
@@ -38,8 +38,21 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 				{
 					// A button window command
 
-					// Destroy main window
-					MessageBox( hWndMain, "Button has been Pressed", INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+					// Allocate string memory
+					LPTSTR lpszTargetPath = new char[ STRING_LENGTH + sizeof( char ) ];
+
+					// Get target path
+					if( ButtonWindowGetTargetPath( BUTTON_WINDOW_ID, lpszTargetPath ) )
+					{
+						// Successfully got target path
+
+						// Display target path
+						MessageBox( hWndMain, lpszTargetPath, INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+					} // End of successfully got target path
+
+					// Free string memory
+					delete [] lpszTargetPath;
 
 					// Break out of switch
 					break;
