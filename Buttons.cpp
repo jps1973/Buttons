@@ -12,16 +12,6 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 		case WM_CREATE:
 		{
 			// A create message
-			HINSTANCE hInstance;
-
-			// Get instance
-			hInstance = ( ( LPCREATESTRUCT )lParam )->hInstance;
-
-			// Create button window
-			if( ButtonWindowCreate( hWndMain, hInstance, BUTTON_WINDOW_ID, "CodeBlocks.lnk" ) )
-			{
-				// Successfully created button window
-			} // End of successfully created button window
 
 			// Break out of switch
 			break;
@@ -34,36 +24,44 @@ LRESULT CALLBACK MainWindowProcedure( HWND hWndMain, UINT uMessage, WPARAM wPara
 			// Select command
 			switch( LOWORD( wParam ) )
 			{
-				case BUTTON_WINDOW_ID:
-				{
-					// A button window command
-
-					// Allocate string memory
-					LPTSTR lpszTargetPath = new char[ STRING_LENGTH + sizeof( char ) ];
-
-					// Get target path
-					if( ButtonWindowGetTargetPath( BUTTON_WINDOW_ID, lpszTargetPath ) )
-					{
-						// Successfully got target path
-
-						// Display target path
-						MessageBox( hWndMain, lpszTargetPath, INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
-
-					} // End of successfully got target path
-
-					// Free string memory
-					delete [] lpszTargetPath;
-
-					// Break out of switch
-					break;
-
-				} // End of a button window command
 				default:
 				{
 					// Default command
+					WORD wCommand;
 
-					// Call default procedure
-					lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+					// Get command code
+					wCommand = LOWORD( wParam );
+
+					// See if command is from a button
+					if( ButtonWindowIsValid( wCommand ) )
+					{
+						// Command is from a button
+
+						// Allocate string memory
+						LPTSTR lpszTargetPath = new char[ STRING_LENGTH + sizeof( char ) ];
+
+						// Get target path
+						if( ButtonWindowGetTargetPath( wCommand, lpszTargetPath ) )
+						{
+							// Successfully got target path
+
+							// Display target path
+							MessageBox( hWndMain, lpszTargetPath, INFORMATION_MESSAGE_CAPTION, ( MB_OK | MB_ICONINFORMATION ) );
+
+						} // End of successfully got target path
+
+						// Free string memory
+						delete [] lpszTargetPath;
+
+					} // End of command is from a button
+					else
+					{
+						// Command is not from a button
+
+						// Call default procedure
+						lResult = DefWindowProc( hWndMain, uMessage, wParam, lParam );
+
+					} // End of command is not from a button
 
 					// Break out of switch
 					break;
@@ -159,6 +157,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 
 			// Update main window
 			UpdateWindow( hWndMain );
+
+			// Create button windows
+			ButtonWindowCreate( hWndMain, hInstance, "CodeBlocks.lnk" );
+			ButtonWindowCreate( hWndMain, hInstance, "Word.lnk" );
 
 			// Main message loop
 			while( GetMessage( &msg, NULL, 0, 0 ) > 0 )

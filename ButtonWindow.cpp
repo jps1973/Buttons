@@ -4,15 +4,18 @@
 
 // Global variables
 static LinkedList g_linkedList;
+static int g_nNextID			= BUTTON_WINDOW_FIRST_ID;
+static int g_nNextLeft			= BUTTON_WINDOW_FIRST_LEFT;
+static int g_nNumberOfButtons	= 0;
 
-BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, int nButtonWindowID, LPCTSTR lpszShortcutFileName )
+BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShortcutFileName )
 {
 	BOOL bResult = FALSE;
 
 	HWND hWndButton;
 
 	// Create button window
-	hWndButton = CreateWindowEx( BUTTON_WINDOW_EXTENDED_STYLE, BUTTON_WINDOW_CLASS_NAME, BUTTON_WINDOW_TEXT, BUTTON_WINDOW_STYLE, 0, 0, BUTTON_WINDOW_WIDTH, BUTTON_WINDOW_HEIGHT, hWndParent, ( HMENU )( INT_PTR )nButtonWindowID, hInstance, NULL );
+	hWndButton = CreateWindowEx( BUTTON_WINDOW_EXTENDED_STYLE, BUTTON_WINDOW_CLASS_NAME, BUTTON_WINDOW_TEXT, BUTTON_WINDOW_STYLE, g_nNextLeft, 0, BUTTON_WINDOW_WIDTH, BUTTON_WINDOW_HEIGHT, hWndParent, ( HMENU )( INT_PTR )g_nNextID, hInstance, NULL );
 
 	// Ensure that button window was created
 	if( hWndButton )
@@ -79,7 +82,14 @@ BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, int nButtonWindow
 								SendMessage( hWndButton, BM_SETIMAGE, ( WPARAM )IMAGE_ICON, ( LPARAM )shFileInfo.hIcon );
 
 								// Add button to linked list
-								g_linkedList.AddNode( nButtonWindowID, hWndButton, lpszTargetPath );
+								g_linkedList.AddNode( g_nNextID, hWndButton, lpszTargetPath );
+
+								// Update number of buttons
+								g_nNumberOfButtons ++;
+
+								// Update global variables for next button
+								g_nNextID ++;
+								g_nNextLeft += BUTTON_WINDOW_WIDTH;
 
 								// Update return value
 								bResult = TRUE;
@@ -114,3 +124,25 @@ BOOL ButtonWindowGetTargetPath( int nID, LPTSTR lpszTargetPath )
 	return g_linkedList.GetTargetPath( nID, lpszTargetPath );
 
 } // End of function ButtonWindowGetTargetPath
+
+BOOL ButtonWindowIsValid( int nID )
+{
+	BOOL bResult = FALSE;
+
+	int nLastButtonID;
+
+	// Calculate last button id
+	nLastButtonID = ( BUTTON_WINDOW_FIRST_ID + g_nNumberOfButtons );
+
+	// See if id is a button
+	if( ( nID >= BUTTON_WINDOW_FIRST_ID ) && ( nID <= nLastButtonID ) )
+	{
+		// Id is a button
+
+		// Update return value
+		bResult = TRUE;
+
+	} // End of id is a button
+
+	return bResult;
+}
