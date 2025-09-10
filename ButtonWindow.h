@@ -24,6 +24,8 @@
 
 BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShortcutFileName );
 
+int ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance );
+
 BOOL ButtonWindowGetTargetPath( int nID, LPTSTR lpszTargetPath );
 
 BOOL ButtonWindowIsValid( int nID );

@@ -159,8 +159,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR, int nCmdShow )
 			UpdateWindow( hWndMain );
 
 			// Create button windows
-			ButtonWindowCreate( hWndMain, hInstance, "CodeBlocks.lnk" );
-			ButtonWindowCreate( hWndMain, hInstance, "Word.lnk" );
+			ButtonWindowCreate( hWndMain, hInstance );
 
 			// Main message loop
 			while( GetMessage( &msg, NULL, 0, 0 ) > 0 )

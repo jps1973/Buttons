@@ -118,6 +118,54 @@ BOOL ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance, LPCTSTR lpszShort
 
 } // End of function ButtonWindowCreate
 
+int ButtonWindowCreate( HWND hWndParent, HINSTANCE hInstance )
+{
+	int nResult = 0;
+
+	WIN32_FIND_DATA wfd;
+	HANDLE hFileFind;
+
+	// Find first item
+	hFileFind = FindFirstFile( "*.lnk", &wfd );
+
+	// Ensure that first item was found
+	if( hFileFind != INVALID_HANDLE_VALUE )
+	{
+		// Successfully found first item
+
+		// Loop through all items
+		do
+		{
+			// See if current item is a file
+			if( !( wfd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ) )
+			{
+				// Current item is a file
+
+				// Create button from file
+				if( ButtonWindowCreate( hWndParent, hInstance, wfd.cFileName ) )
+				{
+					// Successfully created button from file
+
+					// Update return value
+					nResult ++;
+
+				} // End of successfully created button from file
+
+			} // End of current item is a file
+
+		} while( FindNextFile( hFileFind, &wfd ) != 0 ); // End of loop through all items
+
+		// Close file find
+		FindClose( hFileFind );
+
+	} // End of successfully found first item
+
+	// List all the files in the directory with some info about them.
+
+	return nResult;
+
+} // End of function ButtonWindowCreate
+
 BOOL ButtonWindowGetTargetPath( int nID, LPTSTR lpszTargetPath )
 {
 	// Get target path
